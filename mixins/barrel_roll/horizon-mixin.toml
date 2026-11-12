@@ -4,7 +4,7 @@ version = "0.1.0"
 priority = 100
 
 # The commit it was tested on: the look hook reroutes the mouse turn
-# (game/perspective.rs), the bob hook rolls the camera pose (game/fov.rs),
+# (game.rs), the bob hook rolls the camera pose (game/fov.rs),
 # the tick hook steers the rudder (game.rs, game/creative_hotbar.rs,
 # motion.rs' fall_flying), so a Horizon change in those needs a re-check.
 [compatibility]
@@ -41,7 +41,7 @@ bindings = [
 id = "look"
 kind = "HEAD"
 cancellable = true
-target = "horizon_client::game::perspective::Game<'_>::look_turn"
+target = "horizon_client::game::Game<'_>::look_turn"
 helper = "look.rs"
 bindings = [
   { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },

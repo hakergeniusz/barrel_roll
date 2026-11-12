@@ -5,7 +5,6 @@
     "crates/horizon-client/src/game/creative_hotbar.rs": "a35351aa2d34801d190a6d6e3fd02618a24c532b2193549b7f7beeca6240803f",
     "crates/horizon-client/src/game/fov.rs": "97162b2252787b46758cb89bcdcce47010b1d60ccdc2c1c378f307a387791d0f",
     "crates/horizon-client/src/game/native_hooks.rs": "2cb9c8f04dd92484ae22788c61d658a76b34ab74bf9deab06b0e44958eecd5bd",
-    "crates/horizon-client/src/game/perspective.rs": "208b02524aa39033b7c97d6cfafcd63414dba99036e88dbf1ad11a779aa100c0",
     "crates/horizon-client/src/motion.rs": "36ddf5e04828796ca7879114be61ae022ac1f31336320c72d38fb77e62a999b5",
     "crates/horizon-client-render/src/camera.rs": "430a4524ecc9483494ffebee35727d64ba9c8dc85ce6405200ddc26c025b297b"
   },
