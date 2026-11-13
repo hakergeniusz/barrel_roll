@@ -9,7 +9,7 @@ fn barrel_look(
     y: f64,
 ) -> std::ops::ControlFlow<()> {
     use crate::game::barrel_state as state;
-    if !game.native_on(state::ID) {
+    if !game.native_on(crate::game::barrel_roll::ID) {
         return std::ops::ControlFlow::Continue(());
     }
     let gliding = game.screen == crate::game::Screen::Playing

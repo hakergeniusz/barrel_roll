@@ -106,8 +106,9 @@ def mixin_stage(horizon, stages):
         if not any(module in text for text in staged.values()):
             raise ValueError(f"the staged sources hold no `{module[:-2]}`: the bundle did not apply")
     for helper, file in (
-        ("fn trajectory_tick", "crates/horizon-client/src/game/native_hooks.rs"),
-        ("fn trajectory_frame", "crates/horizon-client/src/game/native_visuals.rs"),
+        ("fn barrel_tick", "crates/horizon-client/src/game/native_hooks.rs"),
+        ("fn barrel_look", "crates/horizon-client/src/game.rs"),
+        ("fn barrel_bob", "crates/horizon-client/src/game/fov.rs"),
     ):
         if helper not in (output / "crates/horizon-client/src" / file.split("src/", 1)[1]).read_text():
             raise ValueError(f"the staged {file} holds no `{helper}`: the bundle did not apply")

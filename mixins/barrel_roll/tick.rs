@@ -6,7 +6,7 @@
 // Copyright (c) 2026 hakergeniusz. MIT.
 fn barrel_tick(game: &mut crate::game::Game<'_>) {
     use crate::game::barrel_state as state;
-    if !game.native_on(state::ID) {
+    if !game.native_on(crate::game::barrel_roll::ID) {
         state::reset();
         return;
     }
