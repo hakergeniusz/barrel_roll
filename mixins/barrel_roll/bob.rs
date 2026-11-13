@@ -33,6 +33,11 @@ fn barrel_bob(
     let mut pose = glam::Mat4::from_cols_array(
         &horizon_client::camera::bob_matrix(&bob_state, tilt, game.settings.view_bobbing).m,
     ) * game.native_shake_matrix(partial);
-    pose.rotate_z(crate::game::barrel_roll::camera_degrees(roll));
+    // glam has no in-place rotate_z: the roll post-multiplies — the same
+    // composition as the bob's own hurt tilt, applied last, in radians.
+    pose = pose
+        * glam::Mat4::from_rotation_z(
+            crate::game::barrel_roll::camera_degrees(roll).to_radians(),
+        );
     std::ops::ControlFlow::Break(pose)
 }
