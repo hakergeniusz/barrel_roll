@@ -1,14 +1,23 @@
 // The frame's camera pose, while the roll carries an angle: the vanilla bob
 // (hurt tilt, view bobbing, the shake) rebuilt exactly as the body builds it
 // — the same public camera helpers, the same fields — then the roll read on
-// top as a Z rotation. Without a roll the vanilla body runs untouched, so
-// the ground game never sees this mod.
+// top as a Z rotation. Without a roll (or with the camera setting off) the
+// vanilla body runs untouched, so the ground game never sees this mod.
 // Copyright (c) 2026 hakergeniusz. MIT.
 fn barrel_bob(
     game: &crate::game::Game<'_>,
     partial: f32,
 ) -> std::ops::ControlFlow<glam::Mat4> {
     use crate::game::barrel_state as state;
+    if !game.native_on(crate::game::barrel_roll::ID) {
+        return std::ops::ControlFlow::Continue(());
+    }
+    let s = crate::game::barrel_roll::Settings::read(|key| {
+        game.native_setting(crate::game::barrel_roll::ID, key)
+    });
+    if !s.enabled || !s.camera {
+        return std::ops::ControlFlow::Continue(());
+    }
     let Some(roll) = state::rendered(partial) else {
         return std::ops::ControlFlow::Continue(());
     };

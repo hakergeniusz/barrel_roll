@@ -49,11 +49,12 @@ pub fn add_mouse_roll(turn: f64, gliding: bool) {
 }
 
 /// One tick's integration: the banking chase (and the level settle off the
-/// elytra) from `yaw`, the player's current yaw in degrees.
-pub fn integrate(yaw: f32, gliding: bool) {
+/// elytra) from `yaw`, the player's current yaw in degrees, at the bank
+/// strength the settings hold.
+pub fn integrate(yaw: f32, gliding: bool, bank_strength: f64) {
     if let Ok(mut f) = FLIGHT.lock() {
         let rate = f64::from(yaw - f.prev_yaw);
-        let bank = crate::game::barrel_roll::banking(rate);
+        let bank = crate::game::barrel_roll::banking(rate, bank_strength);
         let was = f.roll;
         f.roll = crate::game::barrel_roll::step(f.roll, 0.0, bank, gliding);
         f.prev_roll = was;

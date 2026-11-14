@@ -10,6 +10,13 @@ fn barrel_tick(game: &mut crate::game::Game<'_>) {
         state::reset();
         return;
     }
+    let s = crate::game::barrel_roll::Settings::read(|key| {
+        game.native_setting(crate::game::barrel_roll::ID, key)
+    });
+    if !s.enabled {
+        state::reset();
+        return;
+    }
     if !game.native_window() {
         return;
     }
@@ -19,16 +26,18 @@ fn barrel_tick(game: &mut crate::game::Game<'_>) {
             .as_ref()
             .is_some_and(|p| p.fall_flying);
     if !gliding {
-        state::integrate(game.yaw, false);
+        state::integrate(game.yaw, false, s.bank);
         return;
     }
-    // The rudder: the strafe keys turn the yaw through the game's own turn.
+    // The rudder: the strafe keys turn the yaw through the game's own turn,
+    // at the speed the settings hold.
     let turn = crate::game::barrel_roll::strafe_turn(
         game.mapped_key_down("key.left"),
         game.mapped_key_down("key.right"),
+        s.rudder,
     );
     if turn != 0.0 {
         game.turn_player(turn, 0.0);
     }
-    state::integrate(game.yaw, true);
+    state::integrate(game.yaw, true, s.bank);
 }
