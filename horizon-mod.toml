@@ -1,0 +1,62 @@
+id = "barrel_roll"
+name = "Barrel Roll"
+version = "0.3.0"
+description = "Barrel rolls for the elytra: the mouse's sideways turn rolls, the strafe keys steer the yaw, and the camera banks into its turns."
+authors = ["hakergeniusz"]
+license = "MIT"
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "f037744a79f9982c47876f49c5a3067279f88706"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+# Every game tick, on the window's Game only: the strafe keys are the rudder
+# (a yaw turn through the game's own `turn_player`), the roll banks into the
+# resulting yaw rate while the elytra carries the player, and everything
+# settles level off it. The Enabled toggle's stored file gates the helper,
+# which resets the roll's shared state when the mod is off. The tick_pre
+# hook itself is implemented (as a no-op) in src/lib.rs so this dispatch
+# always runs.
+[[native.mixin]]
+id = "tick"
+target = "horizon_client::game::native_hooks::client_tick_pre::Game<'_>::native_client_tick_pre"
+kind = "HEAD"
+helper = "src/mixins/tick.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+# The mouse's look while gliding: the sideways turn rolls instead of yawing
+# (the rudder steers), the vertical turn keeps being the pitch. The zoom
+# scale still applies, and the vanilla body runs untouched off the elytra,
+# with the mod off, or when the Mouse X setting says the sideways turn yaws.
+[[native.mixin]]
+id = "look"
+target = "horizon_client::game::pointer_capture::Game<'_>::look_turn"
+kind = "HEAD"
+cancellable = true
+helper = "src/mixins/look.rs"
+bindings = [
+  { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+  { name = "x", ty = "f64", value = "x" },
+  { name = "y", ty = "f64", value = "y" },
+]
+
+# The frame's camera pose: the vanilla bob (hurt tilt, view bobbing, the
+# shake) rebuilt from the same public camera helpers the body builds it
+# with, then the roll read on top as a Z rotation — between ticks it
+# interpolates by the frame's partial tick. Without a roll (or with the
+# camera setting off) the vanilla body runs untouched.
+[[native.mixin]]
+id = "bob"
+target = "horizon_client::game::fov::Game<'_>::bob_matrix"
+kind = "HEAD"
+cancellable = true
+helper = "src/mixins/bob.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+  { name = "partial", ty = "f32", value = "partial" },
+]

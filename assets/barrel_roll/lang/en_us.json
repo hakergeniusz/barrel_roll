@@ -1,0 +1,20 @@
+{
+  "barrel_roll.setting.enabled": "Enabled",
+  "barrel_roll.setting.mouse_x": "Mouse X",
+  "barrel_roll.mouse_x.roll": "Roll",
+  "barrel_roll.mouse_x.turn": "Turn",
+  "barrel_roll.setting.sensitivity": "Roll sensitivity",
+  "barrel_roll.sens.50": "50%",
+  "barrel_roll.sens.100": "100%",
+  "barrel_roll.sens.150": "150%",
+  "barrel_roll.sens.200": "200%",
+  "barrel_roll.sens.300": "300%",
+  "barrel_roll.setting.rudder": "Rudder speed",
+  "barrel_roll.rudder.30": "30°/s",
+  "barrel_roll.rudder.60": "60°/s",
+  "barrel_roll.rudder.90": "90°/s",
+  "barrel_roll.rudder.120": "120°/s",
+  "barrel_roll.setting.bank": "Bank strength",
+  "barrel_roll.setting.camera": "Camera roll",
+  "barrel_roll.setting.invert": "Invert mouse roll"
+}

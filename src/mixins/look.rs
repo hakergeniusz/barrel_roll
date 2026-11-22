@@ -8,29 +8,33 @@ fn barrel_look(
     game: &mut crate::game::Game<'_>,
     x: f64,
     y: f64,
-) -> std::ops::ControlFlow<()> {
-    use crate::game::barrel_state as state;
-    if !game.native_on(crate::game::barrel_roll::ID) {
-        return std::ops::ControlFlow::Continue(());
+) -> core::ops::ControlFlow<()> {
+    // Whether the page's Enabled toggle is on: a missing setting means on;
+    // only `false` turns it off.
+    fn enabled(game: &crate::game::Game<'_>) -> bool {
+        game
+            .stored_setting(barrel_roll::ID, "enabled")
+            .is_none_or(|value| value.trim() != "false")
     }
-    let gliding = game.screen == crate::game::Screen::Playing
+    if !enabled(game) {
+        return core::ops::ControlFlow::Continue(());
+    }
+    let gliding = game.playing()
         && game
             .player
             .as_ref()
             .is_some_and(|p| p.fall_flying);
     if !gliding {
-        return std::ops::ControlFlow::Continue(());
+        return core::ops::ControlFlow::Continue(());
     }
-    let s = crate::game::barrel_roll::Settings::read(|key| {
-        game.native_setting(crate::game::barrel_roll::ID, key)
-    });
+    let s = barrel_roll::Settings::read(|key| game.stored_setting(barrel_roll::ID, key));
     let zoom = game.zoom_turn_scale();
     if !s.mouse_roll {
         // The sideways turn yaws vanilla (the body below runs): the banking
         // still sees it through the tick's yaw rate.
-        return std::ops::ControlFlow::Continue(());
+        return core::ops::ControlFlow::Continue(());
     }
-    state::add_mouse_roll(crate::game::barrel_roll::mouse_roll(x * zoom, &s), true);
+    barrel_roll::state::add_mouse_roll(barrel_roll::mouse_roll(x * zoom, &s), true);
     game.turn_player(0.0, y * zoom);
-    std::ops::ControlFlow::Break(())
+    core::ops::ControlFlow::Break(())
 }

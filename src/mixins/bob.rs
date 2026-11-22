@@ -7,22 +7,26 @@
 fn barrel_bob(
     game: &crate::game::Game<'_>,
     partial: f32,
-) -> std::ops::ControlFlow<glam::Mat4> {
-    use crate::game::barrel_state as state;
-    if !game.native_on(crate::game::barrel_roll::ID) {
-        return std::ops::ControlFlow::Continue(());
+) -> core::ops::ControlFlow<glam::Mat4> {
+    // Whether the page's Enabled toggle is on: a missing setting means on;
+    // only `false` turns it off.
+    fn enabled(game: &crate::game::Game<'_>) -> bool {
+        game
+            .stored_setting(barrel_roll::ID, "enabled")
+            .is_none_or(|value| value.trim() != "false")
     }
-    let s = crate::game::barrel_roll::Settings::read(|key| {
-        game.native_setting(crate::game::barrel_roll::ID, key)
-    });
+    if !enabled(game) {
+        return core::ops::ControlFlow::Continue(());
+    }
+    let s = barrel_roll::Settings::read(|key| game.stored_setting(barrel_roll::ID, key));
     if !s.enabled || !s.camera {
-        return std::ops::ControlFlow::Continue(());
+        return core::ops::ControlFlow::Continue(());
     }
-    let Some(roll) = state::rendered(partial) else {
-        return std::ops::ControlFlow::Continue(());
+    let Some(roll) = barrel_roll::state::rendered(partial) else {
+        return core::ops::ControlFlow::Continue(());
     };
     let Some(p) = game.player.as_ref() else {
-        return std::ops::ControlFlow::Continue(());
+        return core::ops::ControlFlow::Continue(());
     };
     let hurt = &p.health.hurt;
     let bob_state = horizon_client::camera::BobState {
@@ -46,7 +50,7 @@ fn barrel_bob(
     // composition as the bob's own hurt tilt, applied last, in radians.
     pose = pose
         * glam::Mat4::from_rotation_z(
-            crate::game::barrel_roll::camera_degrees(roll).to_radians(),
+            barrel_roll::camera_degrees(roll).to_radians(),
         );
-    std::ops::ControlFlow::Break(pose)
+    core::ops::ControlFlow::Break(pose)
 }

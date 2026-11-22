@@ -19,7 +19,13 @@ The camera pose is the game's own bob (hurt tilt, view bobbing, shake) with
 the roll read on top, so the ground game never changes. The flight physics
 are untouched — the server sees an ordinary elytra flight steered with A/D.
 
-Toggle it in **Options → Mods → Barrel Roll** (on by default).
+## Settings
+
+Options → Mods → Barrel Roll, seven rows: **Enabled**, **Mouse X**
+(roll or turn), **Roll sensitivity** (50–300%), **Rudder speed**
+(30–120°/s), **Bank strength** (50–200%), **Camera roll** (off for motion
+sickness; the model still runs) and **Invert mouse roll**. The values live
+under `horizon-mods/.horizon-mod-data/barrel_roll/` in the game's data dir.
 
 ## How it works
 
@@ -33,11 +39,16 @@ Toggle it in **Options → Mods → Barrel Roll** (on by default).
   camera helpers and adds the roll as a Z rotation — between ticks it
   interpolates by the frame's partial tick.
 
+The brain (`src/lib.rs`) is pure standard library — the roll model and the
+setting files' reader, with its own tests; the helpers (`src/mixins/`) are
+the thin copies the launcher stages into the game's tick, look and camera
+functions, wired by `horizon-mod.toml`.
+
 ## Building
 
-`python3 -I tools/package.py` packages `mixins/barrel_roll/` into
-`target/barrel_roll-0.1.0.hnmod`. The launcher compiles it against the
-pinned Horizon revision (`compatibility.json`).
+`cargo test` runs the brain's tests (the `.horizon/sdk/api` symlink points
+them at the pinned SDK's API crate). The launcher compiles the `.hmod`
+against the pinned Horizon revision on install.
 
 ## License
 
